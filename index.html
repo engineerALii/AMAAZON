@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMAZON | Performance Nutrition</title>
+    
+    <!-- Google Fonts: Teko (Power/Headings) & Barlow (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,800;1,400&family=Teko:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           1. CSS VARIABLES & THEMES
+           ========================================= */
+        :root {
+            /* Default Theme: Power Red */
+            --primary: #000000;
+            --secondary: #ffffff;
+            --accent: #c1ff00;
+            --bg-color: #f4f4f4;
+            --red-dark: #660000; /* GLOBAL PRODUCT RED */
+            --card-bg: var(--red-dark); /* Fixed to Dark Red for ALL themes */
+            --text-on-card: #ffffff;
+            --navbar-bg: rgba(0,0,0,0.9);
+            --border-radius: 4px;
+            --transition: all 0.3s ease-in-out;
+            --container-width: 1200px;
+            --font-heading: 'Teko', sans-serif;
+            --font-body: 'Barlow', sans-serif;
+            --red-vibrant: #cc0000;
+        }
+
+        /* Other Themes */
+        [data-theme="ocean"] { --primary: #001f3f; --secondary: #ffffff; --accent: #39cccc; --bg-color: #e8f4f8; --navbar-bg: rgba(0, 31, 63, 0.95); }
+        [data-theme="stealth"] { --primary: #111111; --secondary: #eeeeee; --accent: #ffd700; --bg-color: #222222; --navbar-bg: rgba(0,0,0,0.95); }
+        [data-theme="jungle"] { --primary: #1b261b; --secondary: #f0f5f0; --accent: #ff851b; --bg-color: #e8efe8; --navbar-bg: rgba(27, 38, 27, 0.95); }
+        [data-theme="cyber"] { --primary: #2d0036; --secondary: #ffffff; --accent: #ff00ff; --bg-color: #1a001f; --navbar-bg: rgba(45, 0, 54, 0.95); }
+
+        html { scroll-behavior: smooth; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: var(--font-body); color: var(--primary); line-height: 1.5; background-color: var(--bg-color); overflow-x: hidden; }
+        h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); text-transform: uppercase; letter-spacing: 1px; }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+        button { cursor: pointer; border: none; font-family: inherit; }
+
+        /* =========================================
+           2. ANIMATIONS & REVEAL
+           ========================================= */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        
+        /* New Product Scrolling Animation */
+        @keyframes scrollProducts {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Assumes content is duplicated once */
+        }
+
+        /* =========================================
+           3. UI UTILITIES
+           ========================================= */
+        .container { max-width: var(--container-width); margin: 0 auto; padding: 0 20px; }
+        .btn { display: inline-block; padding: 12px 40px; font-family: var(--font-heading); font-size: 1.4rem; font-weight: 600; border-radius: 2px; transition: var(--transition); clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); }
+        .btn-primary { background-color: var(--accent); color: #000; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 0 20px var(--accent); }
+        .btn-outline { background: transparent; border: 2px solid var(--secondary); color: var(--secondary); clip-path: none; border-radius: 0; }
+        .btn-outline:hover { background-color: var(--secondary); color: var(--primary); }
+        .btn-danger { background-color: #ff4d4d; color: white; padding: 5px 15px; font-size: 1rem; clip-path: none; border-radius: 4px; }
+        .section-padding { padding: 80px 0; }
+        .text-center { text-align: center; }
+        .section-title { font-size: 4.5rem; line-height: 0.9; margin-bottom: 10px; font-style: italic; }
+        .section-subtitle { color: #666; margin-bottom: 50px; font-size: 1.2rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* =========================================
+           4. NAVBAR & UI COMPONENTS
+           ========================================= */
+        .navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; padding: 15px 0; background: var(--navbar-bg); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: var(--font-heading); font-size: 3rem; line-height: 1; font-weight: 700; font-style: italic; color: var(--secondary); }
+        .logo span { color: var(--accent); }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { font-family: var(--font-heading); font-size: 1.5rem; color: var(--secondary); text-transform: uppercase; }
+        .nav-links a:hover { color: var(--accent); }
+        .nav-icons { display: flex; align-items: center; gap: 20px; color: var(--secondary); }
+        .icon-btn { background: none; color: inherit; position: relative; }
+        .icon-btn svg { width: 24px; height: 24px; }
+        .cart-count { position: absolute; top: -5px; right: -8px; background-color: var(--accent); color: #000; font-size: 0.8rem; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .hamburger { display: none; color: var(--secondary); font-size: 2rem; background:none; }
+
+        /* =========================================
+           5. MAIN SECTIONS
+           ========================================= */
+        .hero { height: 100vh; background: linear-gradient(to right, rgba(0,0,0,0.8), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80'); background-size: cover; background-position: center; display: flex; align-items: center; color: var(--secondary); padding-top: 80px; }
+        .hero-content { max-width: 800px; }
+        .hero h1 { font-size: 6rem; line-height: 0.9; margin-bottom: 20px; font-style: italic; }
+        .hero p { font-size: 1.5rem; margin-bottom: 40px; opacity: 0.9; font-weight: 300; max-width: 600px; }
+        .hero-btns { display: flex; gap: 20px; }
+
+        .ticker-wrap { width: 100%; background-color: var(--accent); overflow: hidden; padding: 10px 0; border-top: 2px solid #000; border-bottom: 2px solid #000; }
+        .ticker { display: flex; width: fit-content; animation: scroll 20s linear infinite; }
+        .ticker-item { font-family: var(--font-heading); font-size: 1.8rem; font-weight: 700; text-transform: uppercase; color: #000; padding: 0 40px; white-space: nowrap; }
+
+        .brands-section { background: var(--secondary); padding: 40px 0; border-bottom: 1px solid #eee; }
+        .brands-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 60px; opacity: 0.6; }
+        .brand-item img { height: 40px; filter: grayscale(100%); transition: var(--transition); }
+        .brand-item:hover img { filter: grayscale(0%); opacity: 1; transform: scale(1.1); }
+
+        /* --- PRODUCTS STYLES --- */
+        
+        /* Grid Mode (Search Results / New Arrivals) */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        
+        /* Scroll Mode (Best Sellers) */
+        .products-scroll-wrapper {
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+            padding: 20px 0; /* Space for shadows */
+        }
+        
+        .products-track {
+            display: flex;
+            gap: 30px;
+            width: max-content;
+            animation: scrollProducts 40s linear infinite;
+        }
+        
+        /* Pause on Hover */
+        .products-track:hover {
+            animation-play-state: paused;
+        }
+        
+        /* Pause Class (Triggered by Modal) */
+        .products-track.paused {
+            animation-play-state: paused !important;
+        }
+
+        /* Card Styles */
+        .product-card { background: var(--card-bg); color: var(--text-on-card); border-radius: var(--border-radius); position: relative; transition: var(--transition); overflow: hidden; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
+        
+        /* In Scroll Mode, cards need fixed width */
+        .products-track .product-card {
+            width: 300px;
+            flex-shrink: 0;
+        }
+
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); border-color: var(--accent); }
+        .product-badge { position: absolute; top: 10px; right: 10px; z-index: 2; background: var(--accent); color: #000; font-family: var(--font-heading); font-size: 1rem; padding: 2px 10px; clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); }
+        .product-img { height: 280px; background-color: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .product-img img { max-height: 100%; transition: var(--transition); filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); }
+        .product-card:hover .product-img img { transform: scale(1.1) rotate(3deg); }
+        .product-info { padding: 20px; }
+        .product-info h3 { font-size: 1.8rem; margin-bottom: 5px; color: var(--text-on-card); }
+        .price-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+        .price { font-family: var(--font-heading); font-size: 2rem; color: var(--accent); }
+        .add-btn { background: transparent; border: 1px solid var(--text-on-card); color: var(--text-on-card); padding: 5px 15px; font-family: var(--font-heading); font-size: 1.2rem; transition: 0.3s; }
+        .add-btn:hover { background: var(--accent); border-color: var(--accent); color: #000; }
+
+        footer { background: #000; color: #fff; padding: 60px 0 20px; border-top: 5px solid var(--accent); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 30px; }
+        .footer-col h4 { color: var(--accent); margin-bottom: 20px; font-size: 1.5rem; }
+        .footer-col ul li a { color: #888; font-size: 1.1rem; }
+        .footer-col ul li a:hover { color: #fff; }
+        .admin-trigger { opacity: 0.2; cursor: pointer; transition: 0.3s; margin-right: 10px; }
+        .admin-trigger:hover { opacity: 1; color: var(--accent); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .status-online { background-color: #00ff00; box-shadow: 0 0 5px #00ff00; }
+        .status-offline { background-color: #ff0000; box-shadow: 0 0 5px #ff0000; }
+
+        /* =========================================
+           6. OVERLAYS & MODALS
+           ========================================= */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; backdrop-filter: blur(5px); }
+        .product-modal-content { background: #fff; padding: 30px; border-radius: 8px; width: 90%; max-width: 900px; display: flex; gap: 30px; color: #000; }
+        .modal-img-col { flex: 1; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+        .modal-info-col { flex: 1.5; }
+        .modal-title { font-size: 3rem; line-height: 1; color: #000; }
+        .modal-price { font-family: var(--font-heading); font-size: 2.5rem; color: var(--red-vibrant); }
+
+        .search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3001; display: none; flex-direction: column; align-items: center; padding-top: 100px; }
+        .search-input { width: 80%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: #fff; font-size: 2rem; padding: 15px; text-align: center; outline: none; font-family: var(--font-heading); }
+        .cart-modal-content { width: 400px; height: 100%; background: #fff; position: absolute; right: 0; top: 0; padding: 30px; display: flex; flex-direction: column; color: #000; }
+        .cart-item { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; align-items: center; }
+        .cart-item img { width: 60px; height: 60px; object-fit: contain; border-radius: 4px; border: 1px solid #eee; }
+        
+        /* =========================================
+           7. IMPROVED ADMIN DASHBOARD (FULL SCREEN)
+           ========================================= */
+        .admin-panel-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #f4f6f9;
+            z-index: 5000;
+            font-family: 'Barlow', sans-serif;
+            color: #333;
+            flex-direction: row;
+        }
+
+        .admin-sidebar {
+            width: 260px;
+            background: #121212;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .admin-logo {
+            font-family: 'Teko', sans-serif;
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 50px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+        }
+
+        .admin-nav-item {
+            background: none;
+            border: none;
+            color: #aaa;
+            text-align: left;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+            margin-bottom: 8px;
+            font-family: var(--font-heading);
+            letter-spacing: 1px;
+        }
+
+        .admin-nav-item:hover, .admin-nav-item.active {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            border-left: 4px solid var(--accent);
+        }
+
+        .logout-btn {
+            margin-top: auto;
+            color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.05);
+        }
+        .logout-btn:hover {
+            background: rgba(255, 77, 77, 0.15);
+            border-left-color: #ff4d4d;
+        }
+
+        .admin-content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 40px;
+            background: #f4f6f9;
+        }
+
+        .admin-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .admin-topbar h2 { font-family: var(--font-heading); font-size: 2.5rem; color: #111; margin: 0; }
+        .close-admin-btn { background: #333; color: #fff; border: none; padding: 8px 20px; border-radius: 4px; font-weight: 600; }
+
+        .admin-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .admin-form-group { margin-bottom: 20px; }
+        .admin-form-group label { display: block; margin-bottom: 8px; font-weight: 700; color: #444; font-size: 0.95rem; }
+        .admin-form-group input, .admin-form-group textarea, .admin-form-group select {
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;
+            font-family: inherit; font-size: 1rem; transition: 0.3s;
+        }
+        .admin-form-group input:focus { border-color: #000; outline: none; }
+
+        .file-upload-box {
+            border: 2px dashed #ddd; padding: 30px; text-align: center;
+            background: #fafafa; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        }
+        .file-upload-box:hover { border-color: var(--accent); background: #fdfdfd; }
+
+        .admin-table {
+            width: 100%; border-collapse: collapse; margin-top: 10px; background: #fff; border-radius: 8px; overflow: hidden;
+        }
+        .admin-table th { background: #f8f9fa; text-align: left; padding: 15px; font-weight: 700; color: #555; }
+        .admin-table td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .admin-table tr:last-child td { border-bottom: none; }
+        
+        .tab-content { display: none; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Login Modal Input Style */
+        #loginForm input {
+            background: #fcfcfc; border: 2px solid #e0e0e0; padding: 16px; font-size: 1.1rem; color: #333; border-radius: 6px; width: 100%; transition: 0.3s;
+        }
+        #loginForm input:focus { background: #fff; border-color: #000; outline: none; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+        @media (max-width: 768px) {
+            .admin-panel-overlay { flex-direction: column; }
+            .admin-sidebar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; padding: 10px; align-items: center; }
+            .admin-logo { display: none; }
+            .admin-nav-item { font-size: 0.9rem; padding: 10px; margin: 0 5px; }
+            .logout-btn { margin-left: auto; }
+            .admin-content-area { padding: 20px; }
+            .hero h1 { font-size: 4rem; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .product-img { height: 150px; }
+            .product-modal-content { flex-direction: column; }
+            .footer-grid { grid-template-columns: 1fr; text-align: center; }
+            .nav-links { position: fixed; top: 0; right: -100%; height: 100vh; width: 80%; background: #000; flex-direction: column; justify-content: center; transition: 0.4s; z-index: 999; }
+            .nav-links.active { right: 0; }
+            .hamburger { display: block; z-index: 1001; }
+            .cart-modal-content { width: 90%; }
+        }
+    </style>
+</head>
+<body data-theme="default">
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">AMAZON<span>.</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#heroSection">Home</a></li>
+                <li><a href="#shop">Shop</a></li>
+                <li><a href="#new">New Arrivals</a></li>
+                <li><a href="#brands">Partners</a></li>
+            </ul>
+            <div class="nav-icons">
+                <button class="icon-btn" onclick="openSearch()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg></button>
+                <button class="icon-btn" style="position: relative;" onclick="openCart()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 20a1 1 0 100 2 1 1 0 000-2zM20 20a1 1 0 100 2 1 1 0 000-2zM1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"></path></svg><span class="cart-count" id="cartCount">0</span></button>
+                <button class="hamburger" id="hamburger"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"></path></svg></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SEARCH OVERLAY -->
+    <div id="searchOverlay" class="search-overlay">
+        <span class="search-close" onclick="closeSearch()" style="position: absolute; top: 30px; right: 30px; font-size: 3rem; color: #fff; cursor: pointer;">&times;</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="SEARCH PRODUCTS..." onkeyup="handleSearch()">
+    </div>
+
+    <!-- CART MODAL -->
+    <div id="cartModal" class="modal-overlay">
+        <div class="cart-modal-content" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="font-weight:700;">YOUR CART</h2>
+                <button onclick="closeModals()" style="font-size:1.5rem; background:none;">&times;</button>
+            </div>
+            <div id="cartItemsList" style="flex:1; overflow-y:auto;"><p style="text-align:center; margin-top:50px; color:#888;">Your cart is empty.</p></div>
+            <div class="cart-total">
+                <div style="display:flex; justify-content:space-between; font-size:1.5rem; font-weight:700; margin-bottom:10px;"><span>TOTAL</span><span id="cartTotalAmount">$0.00</span></div>
+                <button class="btn btn-primary" style="width:100%;">CHECKOUT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="heroSection">
+        <div class="container">
+            <div class="hero-content reveal">
+                <h1 id="heroTitle">UNLEASH YOUR<br>FULL POTENTIAL</h1>
+                <p id="heroSubtitle">Scientifically formulated supplements for elite performance.</p>
+                <div class="hero-btns"><a href="#shop" class="btn btn-primary">SHOP NOW</a><a href="#new" class="btn btn-outline">NEW ARRIVALS</a></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TICKER -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <div class="ticker-item">★ BEST SELLING PRODUCTS ★</div><div class="ticker-item">PRE-WORKOUT ENERGY</div><div class="ticker-item">★ 100% WHEY ISOLATE ★</div><div class="ticker-item">PURE CREATINE</div>
+            <div class="ticker-item">★ BEST SELLING PRODUCTS ★</div><div class="ticker-item">PRE-WORKOUT ENERGY</div><div class="ticker-item">★ 100% WHEY ISOLATE ★</div><div class="ticker-item">PURE CREATINE</div>
+        </div>
+    </div>
+
+    <!-- BRANDS -->
+    <section id="brands" class="brands-section reveal">
+        <div class="container">
+            <div class="text-center" style="margin-bottom: 30px;"><h3 style="color:#888; font-size:1rem;">TRUSTED GLOBAL BRANDS</h3></div>
+            <div class="brands-grid" id="brandsGrid"></div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS (BEST SELLERS - SCROLLING) -->
+    <section id="shop" class="section-padding">
+        <div class="container">
+            <div class="text-center reveal"><h2 class="section-title">BEST SELLERS</h2><p class="section-subtitle">Fuel your ambition with our top picks.</p></div>
+            
+            <!-- Changed Container ID for Scroller -->
+            <div id="productsContainer">
+                <div style="width:100%; text-align:center; padding:20px;">Loading Products...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW ARRIVALS (GRID) -->
+    <section id="new" class="section-padding" style="background: rgba(0,0,0,0.02);">
+        <div class="container">
+            <div class="text-center reveal"><h2 class="section-title">NEW ARRIVALS</h2><p class="section-subtitle">The latest gear to hit the shelves.</p></div>
+            <div class="products-grid" id="newArrivalsGrid"></div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col"><a href="#" class="logo">AMAZON<span>.</span></a><p style="margin-top: 15px; color: #888;">The #1 destination for serious athletes.</p></div>
+                <div class="footer-col"><h4>PRODUCTS</h4><ul><li><a href="#">Protein</a></li><li><a href="#">Creatine</a></li><li><a href="#">Vitamins</a></li></ul></div>
+                <div class="footer-col"><h4>SUPPORT</h4><ul><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms & Conditions</a></li></ul></div>
+                <div class="footer-col"><h4>FOLLOW US</h4><div style="display:flex; gap:10px;"><a href="#">Instagram</a> | <a href="#">Twitter</a></div></div>
+            </div>
+            <div class="footer-bottom">&copy; 2026 AMAZON Sports. All rights reserved. <span id="adminTrigger" class="admin-trigger" title="Admin Login">🔒</span> <div id="connectionStatus" style="display:inline-block; margin-left:15px; font-size:0.8rem; color:#aaa;"><span id="statusDot" class="status-dot status-offline"></span> <span id="statusText">Connecting...</span></div></div>
+        </div>
+    </footer>
+
+    <!-- PRODUCT DETAILS MODAL -->
+    <div id="productModal" class="modal-overlay">
+        <div class="product-modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeModals()" style="font-size:2rem; background:none; position:absolute; top:10px; right:20px; color:#000;">&times;</button>
+            <div class="modal-img-col"><img id="modalImg" src="" alt=""></div>
+            <div class="modal-info-col"><h2 id="modalTitle" class="modal-title"></h2><span id="modalPrice" class="modal-price"></span><div class="stars" style="margin-bottom:20px;">★★★★★</div><p id="modalDesc" class="modal-desc"></p><button class="btn btn-primary" id="modalAddBtn" style="width:100%;">ADD TO CART</button></div>
+        </div>
+    </div>
+
+    <!-- ADMIN LOGIN MODAL -->
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content login-box" style="max-width:400px; color:#000;">
+            <button onclick="closeModals()" style="float:right; font-size:1.5rem; background:none;">&times;</button>
+            <h2 class="text-center section-title" style="font-size: 2rem;">ADMIN LOGIN</h2>
+            <form id="loginForm" style="margin-top: 20px;">
+                <div class="form-group"><label>Password</label><input type="password" id="adminPassword" placeholder="Enter Password" required></div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">LOGIN</button>
+                <p id="loginError" style="color: red; margin-top: 10px; display: none; text-align: center;">Incorrect Password</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- NEW FULLSCREEN ADMIN DASHBOARD -->
+    <div id="dashboardModal" class="admin-panel-overlay">
+        <!-- Sidebar -->
+        <div class="admin-sidebar">
+            <div class="admin-logo">AMAZON ADMIN</div>
+            <button class="admin-nav-item active" onclick="switchTab('tabGeneral')">General & Themes</button>
+            <button class="admin-nav-item" onclick="switchTab('tabHero')">Hero Section</button>
+            <button class="admin-nav-item" onclick="switchTab('tabProducts')">Products</button>
+            <button class="admin-nav-item" onclick="switchTab('tabBrands')">Brands</button>
+            <div style="flex:1;"></div>
+            <button class="admin-nav-item logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="admin-content-area">
+            <div class="admin-topbar">
+                <h2>Dashboard</h2>
+                <button onclick="closeModals()" class="close-admin-btn">Exit Admin</button>
+            </div>
+
+            <!-- Tab: General (THEMES) -->
+            <div id="tabGeneral" class="tab-content active">
+                <div class="admin-card">
+                    <h3 style="margin-bottom:20px;">Site Appearance</h3>
+                    <form id="themeForm">
+                        <div class="admin-form-group">
+                            <label>Select Site Theme</label>
+                            <select id="themeSelector">
+                                <option value="default">Power Red (Default)</option>
+                                <option value="ocean">Ocean Titan (Blue)</option>
+                                <option value="stealth">Stealth Ops (Black/Gold)</option>
+                                <option value="jungle">Jungle Beast (Green)</option>
+                                <option value="cyber">Cyber Punk (Purple)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Apply Theme</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab: Hero -->
+            <div id="tabHero" class="tab-content">
+                <div class="admin-card">
+                    <h3 style="margin-bottom:20px;">Hero Section Content</h3>
+                    <form id="heroForm">
+                        <div class="admin-form-group"><label>Headline</label><input type="text" id="editHeroTitle"></div>
+                        <div class="admin-form-group"><label>Sub-headline</label><textarea id="editHeroSubtitle" rows="3"></textarea></div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab: Products -->
+            <div id="tabProducts" class="tab-content">
+                <div class="admin-card">
+                    <h3 style="margin-bottom:20px;">Manage Products</h3>
+                    <form id="productForm">
+                        <input type="hidden" id="editProductId">
+                        <input type="hidden" id="currentProdImg">
+                        <div class="admin-form-group"><label>Product Name</label><input type="text" id="prodName" required></div>
+                        <div class="admin-form-group">
+                            <label>Price ($)</label><input type="number" id="prodPrice" step="0.01" required>
+                        </div>
+                        <div class="admin-form-group">
+                            <label>Product Image</label>
+                            <div class="file-upload-box" onclick="document.getElementById('prodImgFile').click()">
+                                <p>Click to Upload Image (PNG/JPG)</p>
+                                <input type="file" id="prodImgFile" accept="image/*" style="display:none;">
+                            </div>
+                            <img id="prodImgPreview" src="" style="display:none; width: 100px; height: 100px; object-fit: contain; margin-top: 15px; border:1px solid #ddd; background:#fff; padding:5px; border-radius:4px;">
+                        </div>
+                        <div class="admin-form-group"><label>Description</label><textarea id="prodDesc" rows="3"></textarea></div>
+                        <div style="display:flex; gap:10px;">
+                            <button type="submit" class="btn btn-primary" id="saveProdBtn">Add Product</button>
+                            <button type="button" class="btn btn-outline" style="color:#333; border-color:#ddd;" onclick="resetProductForm()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="admin-card">
+                    <h3 style="margin-bottom:15px;">Product List</h3>
+                    <table class="admin-table">
+                        <thead><tr><th>Image</th><th>Name</th><th>Price</th><th>Actions</th></tr></thead>
+                        <tbody id="productsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab: Brands -->
+            <div id="tabBrands" class="tab-content">
+                <div class="admin-card">
+                    <h3 style="margin-bottom:20px;">Manage Brands</h3>
+                    <form id="brandForm">
+                        <div class="admin-form-group">
+                            <label>Brand Logo</label>
+                            <div class="file-upload-box" onclick="document.getElementById('brandImgFile').click()">
+                                <p>Click to Upload Logo</p>
+                                <input type="file" id="brandImgFile" accept="image/*" style="display:none;" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Brand</button>
+                    </form>
+                </div>
+                <div class="admin-card">
+                    <h3>Current Brands</h3>
+                    <div id="brandsListAdmin" style="display:flex; gap:20px; flex-wrap:wrap; margin-top:20px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE MODULE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        // CONFIG
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+          apiKey: "AIzaSyCzmOcdYCmJ7LZ45srZQ81qpmuisxkhL6s",
+          authDomain: "fir-571e1.firebaseapp.com",
+          projectId: "fir-571e1",
+          storageBucket: "fir-571e1.firebasestorage.app",
+          messagingSenderId: "426975700240",
+          appId: "1:426975700240:web:3a487bed6ce9629de8b195"
+        };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'amazon-sports-prod';
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        let siteData = { hero: { title: "Loading...", subtitle: "..." }, products: [], brands: [], theme: 'default' };
+        let isOffline = false;
+        let cart = [];
+        
+        window.processImage = function(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 500; 
+                        const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH;
+                        canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/png'));
+                    }
+                }
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        const defaultData = {
+            hero: { title: "UNLEASH YOUR<br>FULL POTENTIAL", subtitle: "Scientifically formulated supplements for elite performance." },
+            brands: [
+                "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
+                "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/New_Balance_logo.svg/2560px-New_Balance_logo.svg.png"
+            ],
+            products: [],
+            theme: 'default'
+        };
+
+        const contentRef = doc(db, "artifacts", appId, "public", "data", "main_data", "site_content");
+
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.warn("Auth Failed:", error);
+                setOfflineMode();
+            }
+        }
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                onSnapshot(contentRef, (docSnap) => {
+                    setOnlineMode();
+                    if (docSnap.exists()) {
+                        siteData = docSnap.data();
+                        applyTheme();
+                        renderSite();
+                        if(document.getElementById('dashboardModal').style.display === 'flex') renderAdmin();
+                    } else {
+                        siteData = defaultData;
+                        setDoc(contentRef, defaultData);
+                        renderSite();
+                    }
+                }, (error) => {
+                    setOfflineMode();
+                });
+            }
+        });
+
+        function setOfflineMode() {
+            isOffline = true;
+            document.getElementById('statusDot').className = "status-dot status-offline";
+            document.getElementById('statusText').innerText = "Offline (Local)";
+            const localData = localStorage.getItem('peakformData_offline');
+            if(localData) siteData = JSON.parse(localData);
+            else siteData = defaultData;
+            applyTheme();
+            renderSite();
+        }
+
+        function setOnlineMode() {
+            isOffline = false;
+            document.getElementById('statusDot').className = "status-dot status-online";
+            document.getElementById('statusText').innerText = "Online";
+        }
+
+        function applyTheme() {
+            document.body.setAttribute('data-theme', siteData.theme || 'default');
+        }
+
+        window.saveData = async function() {
+            if(isOffline) {
+                localStorage.setItem('peakformData_offline', JSON.stringify(siteData));
+                alert("Saved locally (Offline).");
+                applyTheme();
+                return;
+            }
+            try { await setDoc(contentRef, siteData); applyTheme(); } 
+            catch (e) { 
+                localStorage.setItem('peakformData_offline', JSON.stringify(siteData)); 
+                alert("Server error, saved locally."); 
+                applyTheme();
+            }
+        };
+
+        // Modified renderProducts to support scrolling and pause
+        function renderProducts(productsList, mode = 'scroll') {
+            const container = document.getElementById('productsContainer'); // Best Sellers
+            const newArrGrid = document.getElementById('newArrivalsGrid'); // New Arrivals
+            
+            if(!container) return;
+            
+            if(!productsList || productsList.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:20px;">No products available.</p>';
+                if(newArrGrid) newArrGrid.innerHTML = '';
+                return;
+            }
+
+            // 1. Render New Arrivals (Grid)
+            let gridHtml = '';
+            productsList.forEach(prod => {
+                gridHtml += `
+                    <div class="product-card reveal active" onclick="openProductModal(${prod.id})">
+                        ${prod.badge ? `<span class="product-badge">${prod.badge}</span>` : ''}
+                        <div class="product-img"><img src="${prod.image}" alt="${prod.name}"></div>
+                        <div class="product-info">
+                            <h3>${prod.name}</h3>
+                            <div class="stars">★★★★★</div>
+                            <div class="price-row">
+                                <span class="price">$${prod.price}</span>
+                                <button class="add-btn" onclick="event.stopPropagation(); addToCart(${prod.id}, this)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            if(newArrGrid) newArrGrid.innerHTML = gridHtml;
+
+            // 2. Render Best Sellers (Scroll or Grid depending on context)
+            if (mode === 'scroll') {
+                // Duplicate items for infinite scroll effect
+                const loopHtml = gridHtml + gridHtml + gridHtml; // Triple content
+                container.innerHTML = `
+                    <div class="products-scroll-wrapper">
+                        <div class="products-track" id="productsTrack">
+                            ${loopHtml}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Grid Mode (Search results)
+                container.innerHTML = `<div class="products-grid">${gridHtml}</div>`;
+            }
+        }
+
+        window.renderSite = function() {
+            document.getElementById('heroTitle').innerHTML = siteData.hero.title;
+            document.getElementById('heroSubtitle').innerText = siteData.hero.subtitle;
+
+            const brandsGrid = document.getElementById('brandsGrid');
+            if(brandsGrid) {
+                brandsGrid.innerHTML = '';
+                if(siteData.brands) {
+                    siteData.brands.forEach(src => {
+                        brandsGrid.innerHTML += `<div class="brand-item"><img src="${src}" alt="Brand"></div>`;
+                    });
+                }
+            }
+            renderProducts(siteData.products, 'scroll'); // Default to scroll mode
+        };
+
+        window.renderAdmin = function() {
+            document.getElementById('editHeroTitle').value = siteData.hero.title;
+            document.getElementById('editHeroSubtitle').value = siteData.hero.subtitle;
+            document.getElementById('themeSelector').value = siteData.theme || 'default';
+
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+            if(siteData.products) {
+                siteData.products.forEach(prod => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><img src="${prod.image}" style="width:50px; height:50px; object-fit:contain; border:1px solid #eee;"></td>
+                            <td><strong>${prod.name}</strong></td>
+                            <td>$${prod.price}</td>
+                            <td>
+                                <button class="btn btn-outline btn-sm" style="color:#333; border-color:#ccc;" onclick="editProduct(${prod.id})">Edit</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteProduct(${prod.id})">Del</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+
+            const brandsDiv = document.getElementById('brandsListAdmin');
+            brandsDiv.innerHTML = '';
+            if(siteData.brands) {
+                siteData.brands.forEach((src, idx) => {
+                    brandsDiv.innerHTML += `
+                        <div style="position:relative; border:1px solid #ddd; padding:10px; border-radius:8px; display:inline-block; background:#fff;">
+                            <img src="${src}" style="height:40px;">
+                            <button onclick="deleteBrand(${idx})" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; width:24px; height:24px; line-height:24px; text-align:center; cursor:pointer; border:none;">&times;</button>
+                        </div>
+                    `;
+                });
+            }
+        };
+
+        // --- SEARCH & CART ---
+        window.openSearch = function() { document.getElementById('searchOverlay').style.display = 'flex'; document.getElementById('searchInput').focus(); };
+        window.closeSearch = function() { 
+            document.getElementById('searchOverlay').style.display = 'none'; 
+            document.getElementById('searchInput').value = ''; 
+            renderProducts(siteData.products, 'scroll'); // Revert to scroll
+        };
+        
+        window.handleSearch = function() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = siteData.products.filter(p => p.name.toLowerCase().includes(query));
+            
+            // When searching, switch Best Sellers to Grid Mode
+            renderProducts(filtered, 'grid'); 
+        };
+
+        window.openCart = function() { renderCartItems(); document.getElementById('cartModal').style.display = 'flex'; };
+        
+        // FIXED addToCart function with safety checks
+        window.addToCart = function(prodId, btn) {
+            if (!siteData.products) return;
+            const prod = siteData.products.find(p => p.id === prodId);
+            if(prod) {
+                cart.push(prod);
+                const countEl = document.getElementById('cartCount');
+                if(countEl) countEl.innerText = cart.length;
+                
+                if(btn) { 
+                    const oldText = btn.innerText; 
+                    btn.innerText = "✓"; 
+                    setTimeout(() => { if(btn) btn.innerText = oldText; }, 1000); 
+                }
+                
+                const toast = document.getElementById('toast');
+                if(toast) {
+                    toast.innerText = "Added to cart!"; 
+                    toast.style.opacity = '1'; 
+                    toast.style.bottom = '50px';
+                    setTimeout(() => { if(toast) { toast.style.opacity = '0'; toast.style.bottom = '30px'; } }, 2000);
+                }
+            }
+        };
+        
+        window.removeFromCart = function(index) { cart.splice(index, 1); renderCartItems(); document.getElementById('cartCount').innerText = cart.length; };
+        function renderCartItems() {
+            const list = document.getElementById('cartItemsList');
+            const totalEl = document.getElementById('cartTotalAmount');
+            list.innerHTML = '';
+            if(cart.length === 0) { list.innerHTML = '<p style="text-align:center; margin-top:50px;">Your cart is empty.</p>'; totalEl.innerText = '$0.00'; return; }
+            let total = 0;
+            cart.forEach((item, index) => {
+                total += item.price;
+                list.innerHTML += `<div class="cart-item"><img src="${item.image}" alt="${item.name}"><div class="cart-item-info"><span class="cart-item-title">${item.name}</span><span class="cart-item-price">$${item.price}</span></div><span class="cart-remove" onclick="removeFromCart(${index})">&times;</span></div>`;
+            });
+            totalEl.innerText = '$' + total.toFixed(2);
+        }
+
+        // --- ADMIN ---
+        let isEditing = false;
+        document.getElementById('heroForm').addEventListener('submit', (e) => { e.preventDefault(); siteData.hero.title = document.getElementById('editHeroTitle').value; siteData.hero.subtitle = document.getElementById('editHeroSubtitle').value; window.saveData(); alert('Changes Saved!'); });
+        document.getElementById('themeForm').addEventListener('submit', (e) => { e.preventDefault(); siteData.theme = document.getElementById('themeSelector').value; window.saveData(); alert('Theme Applied!'); });
+
+        const productForm = document.getElementById('productForm');
+        productForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = isEditing ? parseInt(document.getElementById('editProductId').value) : Date.now();
+            const fileInput = document.getElementById('prodImgFile');
+            let imageBase64 = document.getElementById('currentProdImg').value; 
+            if (fileInput.files && fileInput.files[0]) {
+                try { document.getElementById('saveProdBtn').innerText = "Uploading..."; imageBase64 = await window.processImage(fileInput.files[0]); } catch (err) { alert("Error processing image"); return; }
+            } else if (!isEditing && !imageBase64) { alert("Please select an image"); return; }
+            const newProd = { id: id, name: document.getElementById('prodName').value, price: parseFloat(document.getElementById('prodPrice').value), image: imageBase64, desc: document.getElementById('prodDesc').value, stars: 5, badge: "" };
+            if(isEditing) { const idx = siteData.products.findIndex(p => p.id === id); if(idx !== -1) siteData.products[idx] = newProd; } else { siteData.products.push(newProd); }
+            window.saveData(); window.resetProductForm();
+        });
+
+        window.editProduct = function(id) {
+            const prod = siteData.products.find(p => p.id === id);
+            document.getElementById('editProductId').value = prod.id; document.getElementById('prodName').value = prod.name; document.getElementById('prodPrice').value = prod.price; document.getElementById('currentProdImg').value = prod.image; document.getElementById('prodDesc').value = prod.desc || "";
+            const preview = document.getElementById('prodImgPreview'); preview.src = prod.image; preview.style.display = 'block';
+            document.getElementById('saveProdBtn').innerText = "Update Product"; isEditing = true;
+        }
+        window.deleteProduct = function(id) { if(confirm('Delete?')) { siteData.products = siteData.products.filter(p => p.id !== id); window.saveData(); } }
+        window.resetProductForm = function() { productForm.reset(); isEditing = false; document.getElementById('saveProdBtn').innerText = "Add Product"; document.getElementById('prodImgPreview').style.display = 'none'; document.getElementById('currentProdImg').value = ""; }
+
+        document.getElementById('brandForm').addEventListener('submit', async (e) => {
+            e.preventDefault(); const fileInput = document.getElementById('brandImgFile');
+            if (fileInput.files && fileInput.files[0]) {
+                try { const base64 = await window.processImage(fileInput.files[0]); if(!siteData.brands) siteData.brands = []; siteData.brands.push(base64); window.saveData(); fileInput.value = ''; } catch (err) { alert("Error uploading image"); }
+            }
+        });
+        window.deleteBrand = function(idx) { siteData.brands.splice(idx, 1); window.saveData(); }
+
+        // --- AUTH & TABS ---
+        document.getElementById('adminTrigger').addEventListener('click', () => { document.getElementById('loginModal').style.display = 'flex'; });
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if(document.getElementById('adminPassword').value === 'alikuka') { window.closeModals(); document.getElementById('dashboardModal').style.display = 'flex'; window.renderAdmin(); document.getElementById('adminPassword').value = ''; } else { document.getElementById('loginError').style.display = 'block'; }
+        });
+        window.switchTab = function(id) { 
+            document.querySelectorAll('.tab-content').forEach(d => d.style.display = 'none'); 
+            document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active')); 
+            document.getElementById(id).style.display = 'block'; 
+            event.target.classList.add('active'); 
+        }
+
+        // FIXED openProductModal with PAUSE logic
+        window.openProductModal = function(id) { 
+            const prod = siteData.products.find(p => p.id === id); 
+            if(!prod) return; 
+            
+            // Pause scrolling
+            const track = document.getElementById('productsTrack');
+            if(track) track.classList.add('paused');
+
+            const imgEl = document.getElementById('modalImg');
+            if(imgEl) imgEl.src = prod.image; 
+            
+            const titleEl = document.getElementById('modalTitle');
+            if(titleEl) titleEl.innerText = prod.name;
+            
+            const priceEl = document.getElementById('modalPrice');
+            if(priceEl) priceEl.innerText = "$" + prod.price; 
+            
+            const descEl = document.getElementById('modalDesc');
+            if(descEl) descEl.innerText = prod.desc || ""; 
+            
+            const addBtn = document.getElementById('modalAddBtn');
+            if(addBtn) addBtn.onclick = function() { addToCart(prod.id, this); }; 
+            
+            const modal = document.getElementById('productModal');
+            if(modal) modal.style.display = 'flex'; 
+        }
+        
+        window.closeModals = function() { 
+            document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
+            document.querySelectorAll('.admin-panel-overlay').forEach(m => m.style.display = 'none'); 
+            document.getElementById('searchOverlay').style.display = 'none'; 
+            
+            // Resume scrolling
+            const track = document.getElementById('productsTrack');
+            if(track) track.classList.remove('paused');
+        }
+        window.logout = function() { window.closeModals(); }
+        document.getElementById('productModal').addEventListener('click', window.closeModals);
+        
+        const observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('active'); }); }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        const hamburger = document.getElementById('hamburger'); const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => { navLinks.classList.toggle('active'); });
+        navLinks.querySelectorAll('a').forEach(a => { a.addEventListener('click', () => navLinks.classList.remove('active')); });
+
+    </script>
+</body>
+</html>
