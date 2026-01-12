@@ -54,7 +54,12 @@
         .reveal.active { opacity: 1; transform: translateY(0); }
         
         @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-        @keyframes scrollProducts { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        
+        /* Single Product Fade Animation */
+        @keyframes fadeScale {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
 
         /* =========================================
            3. UI UTILITIES
@@ -112,18 +117,38 @@
 
         /* --- PRODUCTS STYLES --- */
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
-        .products-scroll-wrapper { overflow: hidden; width: 100%; position: relative; padding: 20px 0; }
-        .products-track { display: flex; gap: 30px; width: max-content; animation: scrollProducts 40s linear infinite; }
-        .products-track:hover { animation-play-state: paused; }
-        .products-track.paused { animation-play-state: paused !important; }
-        .products-track .product-card { width: 300px; flex-shrink: 0; }
+        
+        /* Single Product Carousel Style */
+        .single-product-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 450px;
+            padding: 20px;
+        }
+
+        .single-product-card {
+            width: 100%;
+            max-width: 380px;
+            background: var(--card-bg);
+            color: var(--text-on-card);
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            animation: fadeScale 0.6s ease-out; /* Animation here */
+        }
+        
+        .single-product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
 
         .product-card { background: var(--card-bg); color: var(--text-on-card); border-radius: var(--border-radius); position: relative; transition: var(--transition); overflow: hidden; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); }
         .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.4); border-color: var(--accent); }
         .product-badge { position: absolute; top: 10px; right: 10px; z-index: 2; background: var(--accent); color: #000; font-family: var(--font-heading); font-size: 1rem; padding: 2px 10px; clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%); }
         .product-img { height: 280px; background-color: var(--red-dark); display: flex; align-items: center; justify-content: center; padding: 20px; }
         .product-img img { max-height: 100%; transition: var(--transition); filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5)); }
-        .product-card:hover .product-img img { transform: scale(1.1) rotate(3deg); }
+        .product-card:hover .product-img img, .single-product-card:hover .product-img img { transform: scale(1.1) rotate(3deg); }
         
         .product-info { padding: 25px 20px 20px; }
         .product-info h3 { 
@@ -299,6 +324,10 @@
         </div>
     </nav>
 
+    <!-- SEARCH OVERLAY (HIDDEN/REMOVED AS REQUESTED, BUT KEPT EMPTY DIV TO PREVENT ERRORS) -->
+    <div id="searchOverlay" style="display:none;"></div>
+    <input type="hidden" id="searchInput">
+
     <!-- CART MODAL -->
     <div id="cartModal" class="modal-overlay">
         <div class="cart-modal-content" onclick="event.stopPropagation()">
@@ -444,6 +473,17 @@
         </div>
     </section>
 
+    <!-- 4. BEST SELLERS (SINGLE SLIDE) -->
+    <section id="shop" class="section-padding">
+        <div class="container">
+            <div class="text-center reveal"><h2 class="section-title">BEST SELLERS</h2><p class="section-subtitle">Top rated by athletes.</p></div>
+            <!-- Single Product Wrapper -->
+            <div class="single-product-wrapper" id="singleProductContainer">
+                <div style="width:100%; text-align:center; padding:20px;">Loading...</div>
+            </div>
+        </div>
+    </section>
+
     <!-- FOOTER -->
     <footer>
         <div class="container">
@@ -459,7 +499,7 @@
 
     <!-- PRODUCT DETAILS MODAL -->
     <div id="productModal" class="modal-overlay">
-        <div class="product-modal-content" onclick="event.stopPropagation()">
+        <div class="product-modal-content" onclick="event.stopPropagation()" onmouseenter="pauseBestSeller()" onmouseleave="resumeBestSeller()">
             <button class="modal-close-btn" onclick="closeModals()">&times;</button>
             <div class="modal-img-col"><img id="modalImg" src="" alt=""></div>
             <div class="modal-info-col"><h2 id="modalTitle" class="modal-title"></h2><span id="modalPrice" class="modal-price"></span><div class="stars" style="margin-bottom:20px;">★★★★★</div><p id="modalDesc" class="modal-desc"></p><button class="btn btn-primary" id="modalAddBtn" style="width:100%;">ADD TO CART</button></div>
@@ -677,6 +717,8 @@
         };
         let isOffline = false;
         let cart = [];
+        let bestSellerInterval = null; // For Slideshow
+        let bestSellerPaused = false;
         
         window.processImage = function(file) {
             return new Promise((resolve, reject) => {
@@ -917,6 +959,44 @@
             });
             container.innerHTML = html;
         }
+        
+        // --- BEST SELLER SLIDESHOW LOGIC ---
+        function renderBestSellerSingle() {
+            const container = document.getElementById('singleProductContainer');
+            if(!container || siteData.products.length === 0) return;
+            
+            // Clear existing interval
+            if (bestSellerInterval) clearInterval(bestSellerInterval);
+            
+            let idx = 0;
+            const updateSlide = () => {
+                if (bestSellerPaused) return; // Skip update if paused
+                
+                const prod = siteData.products[idx];
+                container.innerHTML = `
+                    <div class="single-product-card" onclick="openProductModal(${prod.id})" onmouseenter="pauseBestSeller()" onmouseleave="resumeBestSeller()">
+                        ${prod.badge ? `<span class="product-badge">${prod.badge}</span>` : ''}
+                        <div class="product-img"><img src="${prod.image}" alt="${prod.name}"></div>
+                        <div class="product-info">
+                            <h3>${prod.name}</h3>
+                            <div class="stars">★★★★★</div>
+                            <div class="price-row">
+                                <span class="price">$${prod.price}</span>
+                                <button class="add-btn" onclick="event.stopPropagation(); addToCart(${prod.id}, this)">ADD TO CART</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                idx = (idx + 1) % siteData.products.length;
+            }
+            
+            updateSlide(); // Initial render
+            bestSellerInterval = setInterval(updateSlide, 3000); // Change every 3s
+        }
+        
+        // Functions to control slideshow from HTML
+        window.pauseBestSeller = function() { bestSellerPaused = true; }
+        window.resumeBestSeller = function() { bestSellerPaused = false; }
 
         window.renderSite = function() {
             document.getElementById('heroTitle').innerHTML = siteData.hero.title;
@@ -932,6 +1012,8 @@
                     });
                 }
             }
+            
+            renderBestSellerSingle(); // Use new single mode for best sellers
             
             // Render specific categories
             renderCategory('protein', 'grid-protein');
@@ -1003,16 +1085,6 @@
             }
         };
 
-        // --- SEARCH & CART ---
-        window.openSearch = function() { document.getElementById('searchOverlay').style.display = 'flex'; document.getElementById('searchInput').focus(); };
-        window.closeSearch = function() { 
-            document.getElementById('searchOverlay').style.display = 'none'; 
-            document.getElementById('searchInput').value = ''; 
-        };
-        window.handleSearch = function() {
-            // No global search render function for simplicity in category view
-            // Could add a global search result container if needed
-        };
         window.openCart = function() { renderCartItems(); document.getElementById('cartModal').style.display = 'flex'; };
         
         window.toggleMenu = function() {
@@ -1185,6 +1257,10 @@
 
         window.openProductModal = function(id) { 
             const prod = siteData.products.find(p => p.id === id); if(!prod) return; 
+            
+            // Pause slider if active
+            window.pauseBestSeller();
+
             document.getElementById('modalImg').src = prod.image; document.getElementById('modalTitle').innerText = prod.name; document.getElementById('modalPrice').innerText = "$" + prod.price; document.getElementById('modalDesc').innerText = prod.desc || ""; 
             const addBtn = document.getElementById('modalAddBtn'); if(addBtn) addBtn.onclick = function() { addToCart(prod.id, this); }; 
             const modal = document.getElementById('productModal'); if(modal) modal.style.display = 'flex'; 
@@ -1193,8 +1269,10 @@
         window.closeModals = function() { 
             document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
             document.querySelectorAll('.admin-panel-overlay').forEach(m => m.style.display = 'none'); 
-            document.getElementById('searchOverlay').style.display = 'none'; 
             document.getElementById('navLinks').classList.remove('active');
+            
+            // Resume slider
+            window.resumeBestSeller();
         }
         window.logout = function() { window.closeModals(); }
         document.getElementById('productModal').addEventListener('click', window.closeModals);
