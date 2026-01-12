@@ -172,22 +172,37 @@
         }
         .modal-close-btn:hover { color: var(--red-vibrant); transform: rotate(90deg) scale(1.1); }
 
-        /* Search Overlay */
-        .search-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 3001; display: none; flex-direction: column; align-items: center; padding-top: 100px; }
-        .search-input { width: 80%; background: transparent; border: none; border-bottom: 2px solid var(--accent); color: #fff; font-size: 2rem; padding: 15px; text-align: center; outline: none; font-family: var(--font-heading); }
-        .search-close { position: absolute; top: 30px; right: 30px; font-size: 4rem; color: #fff; cursor: pointer; transition: 0.3s; }
-        .search-close:hover { color: var(--accent); transform: rotate(90deg); }
-
         /* Cart Modal */
         .cart-modal-content { width: 400px; height: 100%; background: #fff; position: absolute; right: 0; top: 0; padding: 30px; display: flex; flex-direction: column; color: #000; }
         .cart-item { display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #eee; align-items: center; }
         .cart-item img { width: 60px; height: 60px; object-fit: contain; border-radius: 4px; border: 1px solid #eee; }
         
-        /* CHECKOUT MODAL STYLES */
+        /* NEW CHECKOUT MODAL STYLES (Glassmorphism) */
+        #checkoutModal .modal-content {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            width: 90%; max-width: 900px; color: #000; position: relative; overflow: hidden;
+            border-radius: 12px;
+            padding: 40px;
+        }
+
+        .checkout-grid { display: flex; gap: 40px; }
+        .checkout-left { flex: 1.5; }
+        .checkout-right { flex: 1; background: rgba(249, 249, 249, 0.6); padding: 25px; border-radius: 8px; height: fit-content; border: 1px solid rgba(0,0,0,0.05); }
+        
         .checkout-form { font-family: 'Barlow', sans-serif; }
-        .checkout-form label { font-weight: 700; display: block; margin-bottom: 5px; color: #333; }
-        .checkout-form input, .checkout-form select, .checkout-form textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 15px; font-family: inherit; }
-        .checkout-form input:focus { border-color: #000; outline: none; }
+        .checkout-form label { font-weight: 700; display: block; margin-bottom: 8px; color: #111; font-size: 0.95rem; }
+        .checkout-form input, .checkout-form select, .checkout-form textarea { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; font-family: inherit; font-size: 1rem; transition: 0.3s; background: rgba(255,255,255,0.8); }
+        .checkout-form input:focus, .checkout-form select:focus, .checkout-form textarea:focus { border-color: #000; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background: #fff; }
+
+        .order-summary-item { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #e0e0e0; padding-bottom: 15px; align-items: center; }
+        .order-summary-img { width: 50px; height: 50px; object-fit: contain; background: #fff; border: 1px solid #eee; border-radius: 4px; }
+        .order-summary-info h4 { margin: 0; font-size: 0.9rem; font-weight: 600; }
+        .order-summary-info span { font-size: 0.9rem; color: #666; }
+        .order-total-row { display: flex; justify-content: space-between; font-size: 1.4rem; font-family: var(--font-heading); font-weight: 700; margin-top: 20px; border-top: 2px solid #000; padding-top: 15px; }
 
         /* =========================================
            7. IMPROVED ADMIN DASHBOARD
@@ -258,6 +273,10 @@
             .logout-btn { margin-left: auto; }
             .admin-content-area { padding: 20px; }
             .cart-modal-content { width: 90%; }
+            
+            /* Checkout Responsive */
+            .checkout-grid { flex-direction: column; }
+            .checkout-right { order: -1; margin-bottom: 20px; }
         }
     </style>
 </head>
@@ -269,23 +288,16 @@
             <a href="#" class="logo">AMAZON<span>.</span></a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#heroSection">Home</a></li>
-                <li><a href="#shop">Shop</a></li>
-                <li><a href="#new">New Arrivals</a></li>
-                <li><a href="#brands">Partners</a></li>
+                <li><a href="#protein">Proteins</a></li>
+                <li><a href="#creatine">Creatine</a></li>
+                <li><a href="#supplements">Supplements</a></li>
             </ul>
             <div class="nav-icons">
-                <button class="icon-btn" onclick="openSearch()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg></button>
                 <button class="icon-btn" style="position: relative;" onclick="openCart()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 20a1 1 0 100 2 1 1 0 000-2zM20 20a1 1 0 100 2 1 1 0 000-2zM1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"></path></svg><span class="cart-count" id="cartCount">0</span></button>
                 <button class="hamburger" id="hamburger" onclick="toggleMenu()"><svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"></path></svg></button>
             </div>
         </div>
     </nav>
-
-    <!-- SEARCH OVERLAY -->
-    <div id="searchOverlay" class="search-overlay">
-        <button class="search-close" onclick="closeSearch()">&times;</button>
-        <input type="text" id="searchInput" class="search-input" placeholder="SEARCH PRODUCTS..." onkeyup="handleSearch()">
-    </div>
 
     <!-- CART MODAL -->
     <div id="cartModal" class="modal-overlay">
@@ -302,51 +314,67 @@
         </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
+    <!-- NEW MODERN CHECKOUT MODAL -->
     <div id="checkoutModal" class="modal-overlay" style="z-index: 4000;">
-        <div class="modal-content" style="max-width:500px; color:#000; position:relative;">
+        <div class="modal-content">
             <button class="modal-close-btn" onclick="closeModals()">&times;</button>
-            <div style="margin-bottom:20px; border-bottom:1px solid #eee; padding-bottom:10px;">
-                <h2 style="font-family:var(--font-heading); margin:0;">COMPLETE ORDER</h2>
+            
+            <div style="margin-bottom:30px; border-bottom:1px solid rgba(0,0,0,0.1); padding-bottom:15px;">
+                <h2 style="font-family:var(--font-heading); margin:0; font-size:3rem; color:#000;">SECURE CHECKOUT</h2>
             </div>
+            
             <form id="checkoutForm" class="checkout-form">
-                <label>Full Name</label>
-                <input type="text" id="custName" required placeholder="Ali Ahmed">
-                
-                <label>Phone Number</label>
-                <input type="text" id="custPhone" required placeholder="+964 7XX XXX XXXX" value="+964">
-                
-                <label>Governorate</label>
-                <select id="custGov" required>
-                    <option value="">Select Governorate</option>
-                    <option value="Baghdad">Baghdad</option>
-                    <option value="Basra">Basra</option>
-                    <option value="Nineveh">Nineveh</option>
-                    <option value="Erbil">Erbil</option>
-                    <option value="Sulaymaniyah">Sulaymaniyah</option>
-                    <option value="Najaf">Najaf</option>
-                    <option value="Karbala">Karbala</option>
-                    <option value="Kirkuk">Kirkuk</option>
-                    <option value="Anbar">Anbar</option>
-                    <option value="Diyala">Diyala</option>
-                    <option value="Babylon">Babylon</option>
-                    <option value="Wasit">Wasit</option>
-                    <option value="Maysan">Maysan</option>
-                    <option value="Saladin">Saladin</option>
-                    <option value="Dhi Qar">Dhi Qar</option>
-                    <option value="Muthanna">Muthanna</option>
-                    <option value="Qadisiyah">Qadisiyah</option>
-                    <option value="Duhok">Duhok</option>
-                    <option value="Halabja">Halabja</option>
-                </select>
+                <div class="checkout-grid">
+                    <!-- Left Side: Form -->
+                    <div class="checkout-left">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                            <div>
+                                <label>Full Name</label>
+                                <input type="text" id="custName" required placeholder="Ali Ahmed">
+                            </div>
+                            <div>
+                                <label>Phone Number</label>
+                                <input type="text" id="custPhone" required placeholder="+964 7XX XXX XXXX" value="+964">
+                            </div>
+                        </div>
 
-                <label>Full Address</label>
-                <input type="text" id="custAddress" required placeholder="Street, Landmark...">
+                        <div style="display:grid; grid-template-columns: 1fr 2fr; gap:20px;">
+                            <div>
+                                <label>Governorate</label>
+                                <select id="custGov" required>
+                                    <option value="">Select Gov</option>
+                                    <option value="Baghdad">Baghdad</option>
+                                    <option value="Basra">Basra</option>
+                                    <option value="Nineveh">Nineveh</option>
+                                    <option value="Erbil">Erbil</option>
+                                    <option value="Najaf">Najaf</option>
+                                    <option value="Karbala">Karbala</option>
+                                    <!-- Add others -->
+                                </select>
+                            </div>
+                            <div>
+                                <label>Full Address</label>
+                                <input type="text" id="custAddress" required placeholder="Street, Building, Landmark...">
+                            </div>
+                        </div>
 
-                <label>Notes (Optional)</label>
-                <textarea id="custNotes" rows="2" placeholder="Any special instructions..."></textarea>
+                        <label>Notes (Optional)</label>
+                        <textarea id="custNotes" rows="3" placeholder="Any special instructions..."></textarea>
+                    </div>
 
-                <button type="submit" class="btn btn-primary" style="width:100%;">CONFIRM ORDER</button>
+                    <!-- Right Side: Order Summary -->
+                    <div class="checkout-right">
+                        <h4 style="margin-top:0; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px;">ORDER SUMMARY</h4>
+                        <div id="checkoutOrderItems" style="max-height:200px; overflow-y:auto; margin-bottom:20px;">
+                            <!-- Items injected via JS -->
+                        </div>
+                        <div class="order-total-row">
+                            <span>TOTAL</span>
+                            <span id="checkoutTotalAmount" style="color:var(--red-vibrant);">$0.00</span>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:20px;">CONFIRM & ORDER</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -357,7 +385,7 @@
             <div class="hero-content reveal">
                 <h1 id="heroTitle">UNLEASH YOUR<br>FULL POTENTIAL</h1>
                 <p id="heroSubtitle">Scientifically formulated supplements for elite performance.</p>
-                <div class="hero-btns"><a href="#shop" class="btn btn-primary">SHOP NOW</a><a href="#new" class="btn btn-outline">NEW ARRIVALS</a></div>
+                <div class="hero-btns"><a href="#protein" class="btn btn-primary">SHOP NOW</a></div>
             </div>
         </div>
     </section>
@@ -377,21 +405,42 @@
         </div>
     </section>
 
-    <!-- PRODUCTS (BEST SELLERS - SCROLLING) -->
-    <section id="shop" class="section-padding">
+    <!-- 1. PROTEIN SECTION -->
+    <section id="protein" class="section-padding">
         <div class="container">
-            <div class="text-center reveal"><h2 class="section-title">BEST SELLERS</h2><p class="section-subtitle">Fuel your ambition with our top picks.</p></div>
-            <div id="productsContainer">
-                <div style="width:100%; text-align:center; padding:20px;">Loading Products...</div>
+            <div class="text-center reveal">
+                <h2 class="section-title">PROTEINS</h2>
+                <p class="section-subtitle">Build muscle and recover faster.</p>
+            </div>
+            <div class="products-grid" id="grid-protein">
+                <div style="width:100%; text-align:center; padding:20px;">Loading Proteins...</div>
             </div>
         </div>
     </section>
 
-    <!-- NEW ARRIVALS (GRID) -->
-    <section id="new" class="section-padding" style="background: rgba(0,0,0,0.02);">
+    <!-- 2. CREATINE SECTION -->
+    <section id="creatine" class="section-padding" style="background: rgba(0,0,0,0.02);">
         <div class="container">
-            <div class="text-center reveal"><h2 class="section-title">NEW ARRIVALS</h2><p class="section-subtitle">The latest gear to hit the shelves.</p></div>
-            <div class="products-grid" id="newArrivalsGrid"></div>
+            <div class="text-center reveal">
+                <h2 class="section-title">CREATINE</h2>
+                <p class="section-subtitle">Boost strength and explosive power.</p>
+            </div>
+            <div class="products-grid" id="grid-creatine">
+                <div style="width:100%; text-align:center; padding:20px;">Loading Creatine...</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SUPPLEMENTS SECTION -->
+    <section id="supplements" class="section-padding" style="background:#111; color:#fff;">
+        <div class="container">
+            <div class="text-center reveal">
+                <h2 class="section-title" style="color:#fff;">SUPPLEMENTS</h2>
+                <p class="section-subtitle" style="color:#888;">Energy, Vitamins & Wellness.</p>
+            </div>
+            <div class="products-grid" id="grid-supplements">
+                <div style="width:100%; text-align:center; padding:20px; color:#fff;">Loading Supplements...</div>
+            </div>
         </div>
     </section>
 
@@ -660,6 +709,7 @@
             products: [
                 {
                     id: 1,
+                    category: "protein",
                     name: "ON Gold Standard 100% Whey",
                     price: 65.00,
                     stars: 5,
@@ -669,6 +719,7 @@
                 },
                 {
                     id: 2,
+                    category: "protein",
                     name: "Dymatize ISO100 Hydrolyzed",
                     price: 95.00,
                     stars: 5,
@@ -678,6 +729,7 @@
                 },
                 {
                     id: 3,
+                    category: "protein",
                     name: "BSN Syntha-6 Edge",
                     price: 55.00,
                     stars: 4,
@@ -687,6 +739,7 @@
                 },
                 {
                     id: 4,
+                    category: "supplements",
                     name: "Cellucor C4 Original",
                     price: 30.00,
                     stars: 4,
@@ -696,6 +749,7 @@
                 },
                 {
                     id: 5,
+                    category: "creatine",
                     name: "MuscleTech Platinum Creatine",
                     price: 28.00,
                     stars: 5,
@@ -705,6 +759,7 @@
                 },
                 {
                     id: 6,
+                    category: "supplements",
                     name: "Xtend Original BCAA",
                     price: 28.00,
                     stars: 5,
@@ -714,6 +769,7 @@
                 },
                 {
                     id: 7,
+                    category: "supplements",
                     name: "ON Opti-Men",
                     price: 32.00,
                     stars: 5,
@@ -723,6 +779,7 @@
                 },
                 {
                     id: 8,
+                    category: "supplements",
                     name: "JYM Omega JYM",
                     price: 25.00,
                     stars: 5,
@@ -830,20 +887,20 @@
             wrap.innerHTML = html;
         }
 
-        function renderProducts(productsList, mode = 'scroll') {
-            const container = document.getElementById('productsContainer');
-            const newArrGrid = document.getElementById('newArrivalsGrid');
+        function renderCategory(category, containerId) {
+            const container = document.getElementById(containerId);
             if(!container) return;
-            let html = '';
-            if(!productsList || productsList.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:20px;">No products available.</p>';
-                if(newArrGrid) newArrGrid.innerHTML = '';
+            
+            const filtered = siteData.products.filter(p => p.category === category);
+            
+            if(filtered.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:20px; opacity:0.6;">No products in this category yet.</p>';
                 return;
             }
 
-            let gridHtml = '';
-            productsList.forEach(prod => {
-                gridHtml += `
+            let html = '';
+            filtered.forEach(prod => {
+                html += `
                     <div class="product-card reveal active" onclick="openProductModal(${prod.id})">
                         ${prod.badge ? `<span class="product-badge">${prod.badge}</span>` : ''}
                         <div class="product-img"><img src="${prod.image}" alt="${prod.name}"></div>
@@ -858,14 +915,7 @@
                     </div>
                 `;
             });
-            if(newArrGrid) newArrGrid.innerHTML = gridHtml;
-
-            if (mode === 'scroll') {
-                const loopHtml = gridHtml + gridHtml + gridHtml;
-                container.innerHTML = `<div class="products-scroll-wrapper"><div class="products-track" id="productsTrack">${loopHtml}</div></div>`;
-            } else {
-                container.innerHTML = `<div class="products-grid">${gridHtml}</div>`;
-            }
+            container.innerHTML = html;
         }
 
         window.renderSite = function() {
@@ -882,7 +932,11 @@
                     });
                 }
             }
-            renderProducts(siteData.products, 'scroll');
+            
+            // Render specific categories
+            renderCategory('protein', 'grid-protein');
+            renderCategory('creatine', 'grid-creatine');
+            renderCategory('supplements', 'grid-supplements');
         };
 
         window.renderAdmin = function() {
@@ -900,6 +954,7 @@
                         <tr>
                             <td><img src="${prod.image}" style="width:50px; height:50px; object-fit:contain; border:1px solid #eee;"></td>
                             <td><strong>${prod.name}</strong></td>
+                            <td>${prod.category || '-'}</td>
                             <td>$${prod.price}</td>
                             <td>
                                 <button class="btn btn-outline btn-sm" style="color:#333; border-color:#ccc;" onclick="editProduct(${prod.id})">Edit</button>
@@ -953,12 +1008,10 @@
         window.closeSearch = function() { 
             document.getElementById('searchOverlay').style.display = 'none'; 
             document.getElementById('searchInput').value = ''; 
-            renderProducts(siteData.products, 'scroll'); 
         };
         window.handleSearch = function() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = siteData.products.filter(p => p.name.toLowerCase().includes(query));
-            renderProducts(filtered, 'grid'); 
+            // No global search render function for simplicity in category view
+            // Could add a global search result container if needed
         };
         window.openCart = function() { renderCartItems(); document.getElementById('cartModal').style.display = 'flex'; };
         
@@ -998,6 +1051,27 @@
         window.openCheckout = function() {
             if(cart.length === 0) { alert("Your cart is empty!"); return; }
             document.getElementById('cartModal').style.display = 'none'; // hide cart
+            
+            // Populate summary
+            const summaryList = document.getElementById('checkoutOrderItems');
+            const totalEl = document.getElementById('checkoutTotalAmount');
+            summaryList.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach(item => {
+                total += item.price;
+                summaryList.innerHTML += `
+                    <div class="order-summary-item">
+                        <img src="${item.image}" class="order-summary-img">
+                        <div class="order-summary-info">
+                            <h4>${item.name}</h4>
+                            <span>$${item.price}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            totalEl.innerText = '$' + total.toFixed(2);
+            
             document.getElementById('checkoutModal').style.display = 'flex';
         }
 
@@ -1061,14 +1135,28 @@
             } else if (urlInput.value.trim() !== "") { finalImage = urlInput.value.trim(); } 
             else if (!isEditing && !finalImage) { alert("Please upload an image or enter a URL"); return; }
 
-            const newProd = { id: id, name: document.getElementById('prodName').value, price: parseFloat(document.getElementById('prodPrice').value), image: finalImage, desc: document.getElementById('prodDesc').value, stars: 5, badge: "" };
+            const newProd = { 
+                id: id, 
+                category: document.getElementById('prodCategory').value,
+                name: document.getElementById('prodName').value, 
+                price: parseFloat(document.getElementById('prodPrice').value), 
+                image: finalImage, 
+                desc: document.getElementById('prodDesc').value, 
+                stars: 5, badge: "" 
+            };
+            
             if(isEditing) { const idx = siteData.products.findIndex(p => p.id === id); if(idx !== -1) siteData.products[idx] = newProd; } else { siteData.products.push(newProd); }
             window.saveData(); window.resetProductForm();
         });
 
         window.editProduct = function(id) {
             const prod = siteData.products.find(p => p.id === id);
-            document.getElementById('editProductId').value = prod.id; document.getElementById('prodName').value = prod.name; document.getElementById('prodPrice').value = prod.price; document.getElementById('currentProdImg').value = prod.image; document.getElementById('prodDesc').value = prod.desc || "";
+            document.getElementById('editProductId').value = prod.id; 
+            document.getElementById('prodCategory').value = prod.category || 'supplements';
+            document.getElementById('prodName').value = prod.name; 
+            document.getElementById('prodPrice').value = prod.price; 
+            document.getElementById('currentProdImg').value = prod.image; 
+            document.getElementById('prodDesc').value = prod.desc || "";
             document.getElementById('prodImgFile').value = ''; document.getElementById('prodImgUrl').value = '';
             const preview = document.getElementById('prodImgPreview'); preview.src = prod.image; preview.style.display = 'block';
             document.getElementById('saveProdBtn').innerText = "Update Product"; isEditing = true;
@@ -1097,7 +1185,6 @@
 
         window.openProductModal = function(id) { 
             const prod = siteData.products.find(p => p.id === id); if(!prod) return; 
-            const track = document.getElementById('productsTrack'); if(track) track.classList.add('paused');
             document.getElementById('modalImg').src = prod.image; document.getElementById('modalTitle').innerText = prod.name; document.getElementById('modalPrice').innerText = "$" + prod.price; document.getElementById('modalDesc').innerText = prod.desc || ""; 
             const addBtn = document.getElementById('modalAddBtn'); if(addBtn) addBtn.onclick = function() { addToCart(prod.id, this); }; 
             const modal = document.getElementById('productModal'); if(modal) modal.style.display = 'flex'; 
@@ -1107,7 +1194,6 @@
             document.querySelectorAll('.modal-overlay').forEach(m => m.style.display = 'none'); 
             document.querySelectorAll('.admin-panel-overlay').forEach(m => m.style.display = 'none'); 
             document.getElementById('searchOverlay').style.display = 'none'; 
-            const track = document.getElementById('productsTrack'); if(track) track.classList.remove('paused');
             document.getElementById('navLinks').classList.remove('active');
         }
         window.logout = function() { window.closeModals(); }
