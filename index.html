@@ -467,7 +467,9 @@
                                 <option value="cyber">Cyber Punk (Purple)</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Apply Theme</button>
+                        <button type="button" class="btn btn-danger" style="margin-top:20px; width:100%;" onclick="uploadDefaults()">Reset & Upload Default Data</button>
+                        <p style="font-size:0.8rem; color:red; margin-top:5px;">Warning: This overwrites server data!</p>
+                        <button type="submit" class="btn btn-primary" style="margin-top:10px; width:100%;">Apply Theme</button>
                     </form>
                 </div>
             </div>
@@ -809,6 +811,15 @@
                 renderSite();
             }
         };
+        
+        window.uploadDefaults = async function() {
+            if(confirm("Are you sure? This will overwrite all current server data with the hardcoded defaults.")) {
+                siteData = JSON.parse(JSON.stringify(defaultData)); 
+                await window.saveData();
+                alert("Data uploaded successfully!");
+                location.reload();
+            }
+        }
 
         function renderTicker() {
             const wrap = document.getElementById('tickerContent');
